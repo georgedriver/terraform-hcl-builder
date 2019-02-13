@@ -209,3 +209,9 @@ Use the CMD "terraform import" to rebuild tfstate file.
 ## Demo
 
 ![demo](./img/demo.gif)
+
+## TODO
+
+- Test cases for python
+
+- CI/CD
