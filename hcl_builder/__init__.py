@@ -1,4 +1,6 @@
 # coding=utf-8
+name = "hcl_builder"
+
 import argparse
 import json
 from terrascript import Terrascript
@@ -60,11 +62,9 @@ class TerraformHclFromDataSource:
             self.file.close()
             self.file = None
 
-if __name__ == '__main__':
+def main():
 
     parser = argparse.ArgumentParser(description='TF_HCL_GENERATOR.')
-
-
 
     parser.add_argument('action', metavar='ACTION', type=str,
                         help='"hcl" or "cmd": generate hcl or import cmd')
@@ -95,3 +95,6 @@ if __name__ == '__main__':
         t_hcl.dump_cmd()
     else:
         raise Exception("Wrong action gave! Use -h to check the validate action")
+
+if __name__ == '__main__':
+    main()
