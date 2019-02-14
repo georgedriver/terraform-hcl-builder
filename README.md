@@ -10,7 +10,7 @@ This tool can help generate the Terraform HCL code from data resource's output_f
 
 - Python3 "Tested by Python 3.6.6"
 
-- Install `pip3 install .`
+- Install `pip3 install git+https://github.com/georgedriver/terraform-hcl-builder.git`
 
 - Basic knowledge about Terraform
 
