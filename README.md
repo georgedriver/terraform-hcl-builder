@@ -134,24 +134,7 @@ KEYWORDS_NAMES        = "domain_name=name, host_record, type, value"
 Example Results:
 
 ```txt
-bash-4.4# hcl_builder hcl records.txt alicloud_dns_record record_id "domain_name=name, host_record, type, value"
-
-{
-  "resource": {
-    "alicloud_dns_record": {
-      "alicloud_dns_record-3178387884972032": {
-        "host_record": "submail.mail.submail",
-        "name": "xxxxxxx.com",
-        "type": "TXT",
-        "value": "v=submail p=xxxxxxxx"
-      },
-......
-```
-
-Use [json2hcl](https://github.com/kvz/json2hcl) to generate HCL code.
-
-```txt
-hcl_builder hcl records.txt alicloud_dns_record record_id "domain_name=name, host_record, type, value" | json2hcl
+hcl_builder hcl records.txt alicloud_dns_record record_id "domain_name=name, host_record, type, value"
 
 "resource" "alicloud_dns_record" "alicloud_dns_record-3178387884972032" {
   "host_record" = "submail.mail.submail"

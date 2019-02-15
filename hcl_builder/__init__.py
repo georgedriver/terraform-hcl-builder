@@ -1,4 +1,6 @@
 # coding=utf-8
+from pprint import pprint
+
 name = "hcl_builder"
 
 import argparse
@@ -6,21 +8,46 @@ import json
 from terrascript import Terrascript
 from terrascript.alicloud.r import alicloud_instance
 
+str_template = """{resource_or_data} "{resource_type}" "{resource_name}" {{
+{resource_content}
+}}
+"""
+
+
 def factory(alicloud_instance, new_resource_type):
     class NewClass(alicloud_instance): pass
 
     NewClass.__name__ = new_resource_type
     return NewClass
 
+
+def printjson2hcl(json_str):
+    """
+    Just print json2hcl data
+    :param json_str:
+    :return:
+    """
+    json_data = json.loads(json_str)
+    for resource_or_data, resource_or_data_value in json_data.items():
+        for resource_type, resource_type_value in resource_or_data_value.items():
+            for resource_name, resource_name_value in resource_type_value.items():
+                resource_content = '\n'.join("  {} = {}{}{}".format(
+                    k, '' if type(v) == int else '"', v, '' if type(v) == int else '"'
+                ) for k, v in resource_name_value.items())
+
+                print(str_template.format(resource_or_data=resource_or_data, resource_type=resource_type,
+                                          resource_name=resource_name, resource_content=resource_content))
+
+
 class TerraformHclFromDataSource:
 
     def __init__(self, record_file_name, resource_type, id_field_name, keywords_names):
 
         keywords_names_list = str(keywords_names).replace(" ", "").split(',')
-        keywords_in_record  = [str(v).replace(" ", "").split('=')[0] for v in keywords_names_list]
-        keywords_in_hcl     = [str(v).replace(" ", "").split('=')[1] if '=' in str(v)
-                               else str(v).replace(" ", "").split('=')[0]
-                               for v in keywords_names_list]
+        keywords_in_record = [str(v).replace(" ", "").split('=')[0] for v in keywords_names_list]
+        keywords_in_hcl = [str(v).replace(" ", "").split('=')[1] if '=' in str(v)
+                           else str(v).replace(" ", "").split('=')[0]
+                           for v in keywords_names_list]
         keywords_names_dict = dict(zip(keywords_in_record, keywords_in_hcl))
 
         self.file = open(record_file_name, 'r')
@@ -49,7 +76,7 @@ class TerraformHclFromDataSource:
     def dump_hcl(self):
         """Dump Terraform Code."""
 
-        print(self.alicloud_hcl_store.dump())
+        printjson2hcl(self.alicloud_hcl_store.dump())
 
     def dump_cmd(self):
         """Dump Terraform import Command."""
@@ -62,8 +89,8 @@ class TerraformHclFromDataSource:
             self.file.close()
             self.file = None
 
-def main():
 
+def main():
     parser = argparse.ArgumentParser(description='TF_HCL_GENERATOR.')
 
     parser.add_argument('action', metavar='ACTION', type=str,
@@ -81,11 +108,11 @@ def main():
     parser.add_argument('keywords_names', metavar='KEYWORDS_NAMES', type=str,
                         help='keywords_names example: "domain_name=name, host_record, type, value"')
 
-    action              = parser.parse_args().action
+    action = parser.parse_args().action
     records_output_file = parser.parse_args().records_output_file
-    resource_type       = parser.parse_args().resource_type
-    id_field_name       = parser.parse_args().id_field_name
-    keywords_names      = parser.parse_args().keywords_names
+    resource_type = parser.parse_args().resource_type
+    id_field_name = parser.parse_args().id_field_name
+    keywords_names = parser.parse_args().keywords_names
 
     t_hcl = TerraformHclFromDataSource(records_output_file, resource_type, id_field_name, keywords_names)
 
@@ -95,6 +122,7 @@ def main():
         t_hcl.dump_cmd()
     else:
         raise Exception("Wrong action gave! Use -h to check the validate action")
+
 
 if __name__ == '__main__':
     main()
