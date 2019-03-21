@@ -34,8 +34,6 @@ def printjson2hcl(json_str):
                 resource_content = '\n'.join("  {} = {}{}{}".format(
                     k, '' if type(v) == int else '"', v, '' if type(v) == int else '"'
                 ) for k, v in resource_name_value.items())
-                for k, v in resource_name_value.items():
-                    if type(v) ==
 
                 print(str_template.format(resource_or_data=resource_or_data, resource_type=resource_type,
                                           resource_name=resource_name, resource_content=resource_content))
