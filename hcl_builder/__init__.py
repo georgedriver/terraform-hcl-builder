@@ -34,6 +34,8 @@ def printjson2hcl(json_str):
                 resource_content = '\n'.join("  {} = {}{}{}".format(
                     k, '' if type(v) == int else '"', v, '' if type(v) == int else '"'
                 ) for k, v in resource_name_value.items())
+                for k, v in resource_name_value.items():
+                    if type(v) ==
 
                 print(str_template.format(resource_or_data=resource_or_data, resource_type=resource_type,
                                           resource_name=resource_name, resource_content=resource_content))
@@ -63,7 +65,9 @@ class TerraformHclFromDataSource:
             assert record.get(id_field_name, "") != ""
             factory_parameter_dict = {}
             for k_record, k_hcl in keywords_names_dict.items():
-                factory_parameter_dict[k_hcl] = record[k_record]
+                v = json.dumps(record[k_record], sort_keys=True) if record[k_record] is dict else record[k_record]
+                factory_parameter_dict[k_hcl] = v
+                # factory_parameter_dict[k_hcl] = record[k_record]
 
             resource_name = str(resource_type) + '-' + str(record[id_field_name])
 
@@ -76,7 +80,8 @@ class TerraformHclFromDataSource:
     def dump_hcl(self):
         """Dump Terraform Code."""
 
-        printjson2hcl(self.alicloud_hcl_store.dump())
+        # printjson2hcl(self.alicloud_hcl_store.dump())
+        print(self.alicloud_hcl_store.dump())
 
     def dump_cmd(self):
         """Dump Terraform import Command."""
