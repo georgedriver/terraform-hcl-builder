@@ -4,6 +4,8 @@ Build terraform HCL/import CMD from data resource output_file.
 
 This tool can help generate the Terraform HCL code from data resource's output_file; it also can help to generate the tfstate file with terraform import CMD.
 
+json2hcl | grep -v "^$" | sed 's/  "/  /' | sed 's/" = "/ = "/' | sed 's/"resource"/resource/' | gsed "s/^}/}\n/"
+
 ## How to use
 
 ### Prerequisites
